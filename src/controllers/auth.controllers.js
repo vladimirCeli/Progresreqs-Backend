@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
         UserInfo: { username: username, rol_id: user.rol_id },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10s' }
+      { expiresIn: '5m' }
     );
 
     const refresh_token = jwt.sign(
