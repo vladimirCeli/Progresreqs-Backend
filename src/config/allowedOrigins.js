@@ -8,6 +8,7 @@ const allowedOrigins = [
     'https://progreqs.onrender.com',
     'https://progresqscic.onrender.com',
     'https://kind-water-0dacaf610.4.azurestaticapps.net',
+    'https://lemon-water-0119a7b10.4.azurestaticapps.net',
 ];
 
 module.exports = allowedOrigins;
