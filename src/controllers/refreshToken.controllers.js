@@ -4,12 +4,7 @@ require('dotenv').config()
 
 const handleRefreshToken = async (req, res, next) => {
   try {
-    const refresh_token = req.cookies?.token;
-
-    if (!refresh_token) {
-      return res.sendStatus(401);
-    }
-
+    const refresh_token = req.cookies?.token || req.cookies?.ugid;
     const foundUser = await Person.findOne({ where: { refresh_token } });
 
     if (!foundUser) {
