@@ -3,28 +3,24 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config()
 
 const handleRefreshToken = async (req, res, next) => {
-  const cookies = req.cookies;
-  if (!cookies?.token) return res.sendStatus(401);
-  console.log("cookies: " + JSON.stringify(cookies))
-  console.log("token: " + JSON.stringify(toString(cookies?.token)));
-  console.log(cookies.token)
-  const refresh_token = cookies.token;
-
   try {
-    // Encuentra al usuario por refreshToken en la base de datos
-    const foundUser = await Person.findOne({ where: { refresh_token: refresh_token } });
+    const refresh_token = req.cookies?.token;
 
-    if (!foundUser) {
-      return res.sendStatus(403); // Prohibido: refreshToken no encontrado
+    if (!refresh_token) {
+      return res.sendStatus(401);
     }
 
-    // Verifica el refreshToken y descifra
+    const foundUser = await Person.findOne({ where: { refresh_token } });
+
+    if (!foundUser) {
+      return res.sendStatus(403);
+    }
+
     jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
       if (err || foundUser.username !== decoded.username) {
-        return res.sendStatus(403); // Prohibido: Token inválido o discrepancia de correo electrónico
+        return res.sendStatus(403);
       }
 
-      // Genera un nuevo accessToken
       const accessToken = jwt.sign(
         {
           UserInfo: {
@@ -33,10 +29,9 @@ const handleRefreshToken = async (req, res, next) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '5m' } // Ajusta la expiración del token según sea necesario
+        { expiresIn: '5m' }
       );
 
-      // Envía el nuevo accessToken en la respuesta
       res.json({
         username: foundUser.username,
         rol_id: foundUser.rol_id,
@@ -46,7 +41,6 @@ const handleRefreshToken = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-  
 };
 
 module.exports = { handleRefreshToken };
