@@ -80,7 +80,6 @@ async function main() {
     try {
         await sequelize.authenticate();
         
-        // Sincroniza la base de datos y forza la recreación de tablas
         await sequelize.sync({ force: false });
         await Person.update({ refresh_token: null }, { where: {} });
         // Crea roles si no existen
