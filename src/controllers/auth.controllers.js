@@ -71,7 +71,7 @@ const login = async (req, res, next) => {
 
     await user.update({ refresh_token: refresh_token });
 
-    res.cookie('token', refresh_token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 });
+    res.cookie('token', refresh_token, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 });
     res.json({ rol_id: user.rol_id, token: accessToken });
   } catch (error) {
     // Maneja errores generales aquí
