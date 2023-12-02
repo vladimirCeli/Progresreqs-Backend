@@ -4,8 +4,11 @@ require('dotenv').config()
 
 const handleRefreshToken = async (req, res, next) => {
   const cookies = req.cookies;
-  if (!cookies?.ugid) return res.sendStatus(401);
-  const refresh_token = cookies.ugid;
+  if (!cookies?.token) return res.sendStatus(401);
+  console.log("cookies: " + JSON.stringify(cookies))
+  console.log("token: " + JSON.stringify(toString(cookies?.token)));
+  console.log(cookies.token)
+  const refresh_token = cookies.token;
 
   try {
     // Encuentra al usuario por refreshToken en la base de datos
