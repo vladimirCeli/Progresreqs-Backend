@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const Rol = sequelize.define('rol', {
+const Rol = sequelize.define('Role', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -24,7 +24,7 @@ const Rol = sequelize.define('rol', {
   }
 }, 
 {
-  tableName: 'rol',
+  tableName: 'Role',
   timestamps: false,
   underscored: true,
   sequelize,

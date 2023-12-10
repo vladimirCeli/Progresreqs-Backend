@@ -4,7 +4,7 @@ const sequelize = require('../config/db');
 const Requirements = require('./Requirements.model');
 const RequirementsSecurity = require('./RequirementsSecurity.model');
 
-const RequirementsRequirementsSecurity = sequelize.define("requirements_requirements_security", {
+const RequirementsRequirementsSecurity = sequelize.define("RequirementRequirementSecurity", {
     requirements_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -31,7 +31,7 @@ const RequirementsRequirementsSecurity = sequelize.define("requirements_requirem
       }
     },
     {
-      tableName: 'requirements_requirements_security',
+      tableName: 'RequirementRequirementSecurity',
       timestamps: false,
       underscored: true,
       sequelize,

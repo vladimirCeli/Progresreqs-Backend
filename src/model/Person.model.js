@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const Rol = require('./Rol.model');
 
-const Person = sequelize.define("person", {
+const Person = sequelize.define("Person", {
     first_name: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -61,7 +61,7 @@ const Person = sequelize.define("person", {
     },
   },
   {
-    tableName: 'person',
+    tableName: 'Person',
     timestamps: false,
     underscored: true,
     sequelize,

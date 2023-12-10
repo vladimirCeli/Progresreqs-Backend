@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const SubcategoriesRequirements = require('./SubcategoriesRequirements.model');
 
-const RequirementsSecurity = sequelize.define("requirements_security", {
+const RequirementsSecurity = sequelize.define("RequirementSecurity", {
     numeration: {
         type: DataTypes.STRING,
       },
@@ -35,7 +35,7 @@ const RequirementsSecurity = sequelize.define("requirements_security", {
       }
     },
     {
-      tableName: 'requirements_security',
+      tableName: 'RequirementSecurity',
       timestamps: false,
       underscored: true,
       sequelize,

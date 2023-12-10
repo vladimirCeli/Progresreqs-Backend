@@ -36,7 +36,6 @@ require('./model/Projects.model.js')
 require('./model/Requirements.model.js')
 require('./model/RequirementsRequirementsSecurity.model.js')
 require('./model/Task.model.js')
-require('./model/RequirementsNotFuntionals.js')
 const Person = require('./model/Person.model.js')
 require('./config/mongodb')
 
@@ -84,11 +83,11 @@ async function main() {
         await Person.update({ refresh_token: null }, { where: {} });
         // Crea roles si no existen
         await sequelize.query(`
-            INSERT INTO rol (id, name) VALUES (1, 'Administrador')
+            INSERT INTO "Role" (id, name) VALUES (1, 'Administrador')
             ON CONFLICT (id) DO NOTHING;
         `);
         await sequelize.query(`
-            INSERT INTO rol (id, name) VALUES (2, 'Usuario')
+            INSERT INTO "Role" (id, name) VALUES (2, 'Usuario')
             ON CONFLICT (id) DO NOTHING;
         `);
         console.log('Connection has been established successfully.');

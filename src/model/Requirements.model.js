@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const Projects = require('./Projects.model');
 
-const Requirements = sequelize.define("requirements", {
+const Requirements = sequelize.define("Requirement", {
     ident_requirement_id: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -35,7 +35,7 @@ const Requirements = sequelize.define("requirements", {
       }
     },
     {
-      tableName: 'requirements',
+      tableName: 'Requirement',
       timestamps: false,
       underscored: true,
       sequelize,

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const Person = require('./Person.model');
 
-const CategoriesRequirements = sequelize.define("categories_requirements", {
+const CategoriesRequirements = sequelize.define("CategoryRequirement", {
     name: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -24,7 +24,7 @@ const CategoriesRequirements = sequelize.define("categories_requirements", {
     }
   },
   {
-    tableName: 'categories_requirements',
+    tableName: 'CategoryRequirement',
     timestamps: false,
     underscored: true,
     sequelize,

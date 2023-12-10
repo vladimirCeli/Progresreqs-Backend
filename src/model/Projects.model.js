@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const Person = require('./Person.model');
 
-const Projects = sequelize.define("projects", {
+const Projects = sequelize.define("Project", {
     name: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -22,7 +22,7 @@ const Projects = sequelize.define("projects", {
     }
   },
   {
-    tableName: 'projects',
+    tableName: 'Project',
     timestamps: false,
     underscored: true,
     sequelize,
