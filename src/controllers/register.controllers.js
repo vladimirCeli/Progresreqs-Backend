@@ -32,10 +32,49 @@ const sendConfirmationEmail = async (email, code) => {
       from: "vladimir.celi@unl.edu.ec",
       to: email,
       subject: "Confirmación de cuenta",
-      html: `<h1>Por favor, confirma tu cuenta</h1>
-      <h3>Para confirmar tu cuenta, haz click en el siguiente enlace</h3>
-      <p>Código de confirmación: ${code}</p>
-      `,
+      html: `
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              margin: 0;
+              padding: 0;
+              background-color: #f4f4f4;
+            }
+            .container {
+              max-width: 600px;
+              margin: 20px auto;
+              padding: 20px;
+              background-color: #fff;
+              border-radius: 8px;
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+              color: #333;
+            }
+            h3 {
+              color: #555;
+            }
+            p {
+              color: #777;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>¡Bienvenido!</h1>
+            <p>Por favor, confirma tu cuenta para comenzar a disfrutar de nuestros servicios.</p>
+            <h3>Código de confirmación:</h3>
+            <p>${code}</p>
+            <p>
+              <strong>Nota:</strong> Este código es válido por un tiempo limitado.
+            </p>
+          </div>
+        </body>
+      </html>
+    `,
+
   }
    const info = await transporter.sendMail(mailOptions)
     console.log("Message sent: %s", info.messageId)

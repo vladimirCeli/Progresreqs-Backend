@@ -3,26 +3,12 @@ const compression = require("compression");
 const app = express()
 app.disable('x-powered-by')
 app.use(compression());
-const apppractices = express()
 const PORT = process.env.PORT ?? 4000;
-const PORTPRACTICES = 9000
 const morgan = require('morgan')
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
 const credentials = require('./middleware/credentials')
-const projectsRoutes = require('./routes/projects.routes')
-const requirementsRoutes = require('./routes/requirements.routes')
-const tasks = require('./routes/tasks.routes')
-const person = require('./routes/person.routes')
 const { scheduleCleanupTask } = require('./config/Schedule')
-const requirementsec = require('./routes/requirementssec.routes')
-const refreshTokens = require('./routes/refreshToken.routes')
-const auth = require('./routes/auth.routes')
-const logout = require('./routes/logout.routes')
-const register = require('./routes/register.routes')
-const questionnaireRoutes = require('./routes/questionnaire/questionnaire.routes')
-const subseccionRoutes = require('./routes/questionnaire/practice.routes')
-const questionRoutes = require('./routes/questionnaire/question.routes')
 const cookieParser = require("cookie-parser");
 const verifyJWT = require('./middleware/verifyJWT')
 const sequelize = require('../src/config/db');
@@ -51,29 +37,25 @@ app.use(cookieParser())
 scheduleCleanupTask();
 
 
-app.use(logout)
-app.use(auth)
-app.use(register)
-app.use(refreshTokens)
-app.use(projectsRoutes)
-app.use(requirementsRoutes)
-app.use(tasks)
-app.use(questionnaireRoutes)
+app.use(require('./routes/logout.routes'))
+app.use(require('./routes/auth.routes'))
+app.use(require('./routes/register.routes'))
+app.use(require('./routes/refreshToken.routes'))
+app.use(require('./routes/projects.routes'))
+app.use(require('./routes/requirements.routes'))
+app.use(require('./routes/tasks.routes'))
+app.use(require('./routes/questionnaire/questionnaire.routes'))
 app.use(require('./routes/categoriesecurity.routes.js'))
 app.use(require('./routes/questionnaire/categorie.routes'))
 app.use(require('./routes/subcategories.routes'))
 app.use(require('./routes/interequirements.routes'))
-app.use(subseccionRoutes)
-app.use(questionRoutes)
-app.use(requirementsec)
+app.use(require('./routes/questionnaire/practice.routes'))
+app.use(require('./routes/questionnaire/question.routes'))
+app.use(require('./routes/requirementssec.routes') )
 app.use(require('./routes/tasks.routes'))
 app.use(require('./routes/questionnaire/response.routes'))
 app.use(verifyJWT)
-app.use(person)
-
-apppractices.listen(PORTPRACTICES, () => {
-    console.log(`Server Practices On ${PORTPRACTICES}`)
-})
+app.use(require('./routes/person.routes'))
 
 async function main() {
     try {
@@ -90,13 +72,13 @@ async function main() {
             INSERT INTO "Role" (id, name) VALUES (2, 'Usuario')
             ON CONFLICT (id) DO NOTHING;
         `);
-        console.log('Connection has been established successfully.');
+        console.log('Conexión exitosa a PostgreSQL.');
     } catch (error) {
-        console.error('Unable to connect to the database:', error);
+        console.error('Erro de conexión a PostgreSQL.', error);
     }
 }
 main();
 
 app.listen(PORT, () => {
-    console.log('Server On',PORT)
+    console.log('Servidor en puerto',PORT)
 })
