@@ -17,7 +17,7 @@ const getRequirementByProject = async (req, res, next) => {
       where: { project_id: id, req_no_funtional: { [Op.not]: null }, characteristicsr: { [Op.not]: null } },
     });
     if (requirements.length === 0) {
-      return res.status(404).json({ message: "No existen requisitos para este proyecto" });
+      return res.status(404).json({ message: "No existen requisitos funcionales para este proyecto" });
     }
     res.status(200).json(requirements);
   } catch (error) {
@@ -53,6 +53,35 @@ const checkRequirementNoFuntional = async (req, res, next) => {
   } else {
     const isNotFuntional = false;
     return res.status(200).json({ isNotFuntional });
+  }
+};
+
+const getNumberRequirements = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const requirements = await Requirement.findAll({
+      where: { project_id: id },
+    });
+
+    var numberRequirements = 0;
+    var numberRequirementsNotFunctional = 0;
+    if (!requirements) {
+      return res.status(404).json({
+        numberRequirements,
+        numberRequirementsNotFunctional,
+      });
+    }
+    for (let i = 0; i < requirements.length; i++) {
+      if (requirements[i].req_no_funtional === null) {
+        numberRequirementsNotFunctional++;
+      } else {
+        numberRequirements++;
+      }
+    }
+
+    res.status(200).json({ numberRequirements, numberRequirementsNotFunctional });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -161,6 +190,7 @@ module.exports = {
   getAllRequirements,
   getRequirement,
   checkRequirementNoFuntional,
+  getNumberRequirements,
   createRequirement,
   deleteRequirement,
   updateRequirement,
