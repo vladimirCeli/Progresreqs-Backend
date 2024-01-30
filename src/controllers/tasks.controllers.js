@@ -60,6 +60,26 @@ const getAllTasks = async (req, res, next) => {
     }
   }
 
+  const updateDeadline = async (req, res, next) => {
+    const { id } = req.params;
+    const { deadline } = req.body;
+
+    try {
+      const task = await Task.findByPk(id);
+
+      if (!task) {
+        return res.status(404).json({ message: 'No existe la tarea' });
+      }
+
+      task.deadline = deadline;
+
+      await task.save();
+      res.status(200).json(task);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   const updateTaskByIdCompletedOrNotCompleted = async (req, res, next) => {
     try {
       const { completed } = req.body;
@@ -77,6 +97,8 @@ const getAllTasks = async (req, res, next) => {
       next(error);
     }
   }
+
+
   
   // Crear una nueva tarea
   const createTask = async (req, res, next) => {
@@ -147,6 +169,7 @@ const getAllTasks = async (req, res, next) => {
     getAllTasks,
     getTaskByIdRequirement,
     updateWriteDescription,
+    updateDeadline,
     updateTaskByIdCompletedOrNotCompleted,
     getTask,
     createTask,

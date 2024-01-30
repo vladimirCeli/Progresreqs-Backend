@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const { getAllTasks, getTaskByIdRequirement, getTask,updateWriteDescription, updateTaskByIdCompletedOrNotCompleted, createTask, deleteTask, updateTask } = require('../controllers/tasks.controllers')
+const { getAllTasks, getTaskByIdRequirement, getTask,updateWriteDescription, updateDeadline, updateTaskByIdCompletedOrNotCompleted, createTask, deleteTask, updateTask } = require('../controllers/tasks.controllers')
 
 const router = Router()
 
@@ -8,6 +8,8 @@ router.get('/tasks', getAllTasks )
 router.get('/tasks/requirement/:id', getTaskByIdRequirement )
 
 router.put('/tasks/write_description/:id', updateWriteDescription);
+
+router.put('/tasks/deadline/:id', updateDeadline);
 
 router.put('/tasks/completed/:id', updateTaskByIdCompletedOrNotCompleted);
 

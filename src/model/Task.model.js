@@ -23,6 +23,10 @@ const Task = sequelize.define("Task", {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    deadline: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
