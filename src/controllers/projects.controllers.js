@@ -1,6 +1,7 @@
-const Project = require("../model/Projects.model"); // Asegúrate de importar el modelo correcto
-const Requirement = require("../model/Requirements.model"); // Importa el modelo Requirement
+const Project = require("../model/Projects.model"); 
+const Requirement = require("../model/Requirements.model");
 const Task = require("../model/Task.model");
+const Person = require("../model/Person.model");
 
 const getAllProjects = async (req, res, next) => {
   try {
@@ -8,6 +9,39 @@ const getAllProjects = async (req, res, next) => {
     res.json({ projects, messages: "Proyectos obtenidos correctamente" });
   } catch (error) {
     next(error);
+  }
+};
+
+const getAllProjectsAllPersons = async (req, res) => {
+  try {
+    const projects = await Project.findAll({
+      include: {
+        model: Person,
+        attributes: ['first_name', 'last_name'],
+      },
+    });
+
+    if (projects.length === 0) {
+      return res.status(404).json({ message: "No existen proyectos disponibles" });
+    }
+
+    res.json({
+      projects: projects.map((project) => ({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        created_at: project.created_at,
+        updated_at: project.updated_at,
+        creator: {
+          first_name: project.Person.first_name,
+          last_name: project.Person.last_name,
+        },
+      })),
+      message: "Proyectos obtenidos correctamente",
+    });
+  } catch (error) {
+    console.error("Error al obtener los proyectos:", error);
+    res.status(500).json({ message: "Error al obtener los proyectos" });
   }
 };
 
@@ -170,6 +204,7 @@ const updateProject = async (req, res) => {
 
 module.exports = {
   getAllProjects,
+  getAllProjectsAllPersons,
   getProject,
   getProjectByPerson,
   getProjectWithProgress,

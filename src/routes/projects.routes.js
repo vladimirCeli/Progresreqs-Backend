@@ -1,9 +1,11 @@
 const {Router} = require('express')
-const { getAllProjects, getProject, getProjectByPerson, getProjectWithProgress, createProject, deleteProject, updateProject } = require('../controllers/projects.controllers')
+const { getAllProjects,getAllProjectsAllPersons, getProject, getProjectByPerson, getProjectWithProgress, createProject, deleteProject, updateProject } = require('../controllers/projects.controllers')
 
 const router = Router()
 
 router.get('/projects', getAllProjects )
+
+router.get('/projects/all', getAllProjectsAllPersons)
 
 router.get('/projects/:id', getProject )
 
