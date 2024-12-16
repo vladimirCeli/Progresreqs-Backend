@@ -64,7 +64,7 @@ const updatePracticeById = async (req, res) => {
 
     const updatedPractice = await Practice.findByIdAndUpdate(
       req.params.id,
-      { name, original, questions },
+      { $set: { name, original, questions } },
       { new: true }
     ).populate("questions");
 
