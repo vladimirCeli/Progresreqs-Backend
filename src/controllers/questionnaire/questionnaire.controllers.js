@@ -212,7 +212,10 @@ const updateQuestionnaireByIdInPublishedOrUnpublished = async (req, res) => {
 
 const updateQuestionnaireByIdSteps = async (req, res) => {
   try {
-    const { steps } = req.body;
+    let { steps } = req.body;
+    if (typeof steps !== "number") {
+      return res.status(400).json({ message: "Invalid steps value." });
+    }
 
     // Obtener el cuestionario actual por su ID
     const currentQuestionnaire = await Questionnaire.findById(req.params.id);
@@ -244,10 +247,10 @@ const updateQuestionnaireByIdSteps = async (req, res) => {
 
     res.status(200).json(updatedQuestionnaire);
   } catch (error) {
-    console.error("Error al actualizar el cuestionario por ID:", message);
+    console.error("Error al actualizar el cuestionario por ID:", error);
     res
       .status(500)
-      .json({ message: "Hubo un error al actualizar el cuestionario." });
+      .json({ error: "Hubo un error al actualizar el cuestionario." });
   }
 };
 
