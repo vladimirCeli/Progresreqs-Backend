@@ -247,10 +247,10 @@ const updateQuestionnaireByIdSteps = async (req, res) => {
 
     res.status(200).json(updatedQuestionnaire);
   } catch (error) {
-    console.error("Error al actualizar el cuestionario por ID:", message);
+    console.error("Error al actualizar el cuestionario por ID:", error);
     res
       .status(500)
-      .json({ message: "Hubo un error al actualizar el cuestionario." });
+      .json({ error: "Hubo un error al actualizar el cuestionario." });
   }
 };
 
