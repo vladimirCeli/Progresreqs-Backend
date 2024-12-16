@@ -153,7 +153,7 @@ const selectAdditionalQuestionnaire = async (req, res) => {
     const { selectedId } = req.body;
 
     const selectedQuestionnaire = await Questionnaire.find({
-      _id: selectedId,
+      _id: { $eq: selectedId },
       published: true,
       steps: 0,
     });
