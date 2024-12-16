@@ -53,9 +53,13 @@ const updateResponseById = async (req, res) => {
       return res.status(400).json({ message: 'El nombre de la respuesta no puede estar vacío.' });
     }
 
+    if (typeof project_id !== 'string' || typeof questionnaire_id !== 'string') {
+      return res.status(400).json({ message: 'Invalid project_id or questionnaire_id' });
+    }
+
     const response = await Response.findByIdAndUpdate(
       req.params.id,
-      { project_id, name, questions, questionnaire_id },
+      { project_id: { $eq: project_id }, name, questions, questionnaire_id: { $eq: questionnaire_id } },
       { new: true }
     );
     if (!response) {
