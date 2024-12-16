@@ -82,12 +82,19 @@ const updateQuestion = async (req, res) => {
       return res.status(400).json({ error: 'No puedes actualizar una pregunta original.' });
     }
 
+    // Validate input data
+    if (typeof question !== 'string' || !Array.isArray(options) || typeof original !== 'boolean') {
+      return res.status(400).json({ error: 'Datos de entrada no válidos.' });
+    }
+
     const updatedQuestion = await Question.findByIdAndUpdate(
       req.params.id,
       {
-        question,
-        options,
-        original,
+        $set: {
+          question,
+          options,
+          original,
+        }
       },
       { new: true }
     );
