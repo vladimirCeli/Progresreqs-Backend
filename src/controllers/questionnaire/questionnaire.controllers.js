@@ -193,6 +193,9 @@ const selectAdditionalQuestionnaire = async (req, res) => {
 const updateQuestionnaireByIdInPublishedOrUnpublished = async (req, res) => {
   try {
     const { published } = req.body;
+    if (typeof published !== "boolean") {
+      return res.status(400).json({ error: "Invalid input for published field." });
+    }
     const updatedQuestioBynnaire = await Questionnaire.findByIdAndUpdate(
       req.params.id,
       { published },
