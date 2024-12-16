@@ -165,9 +165,12 @@ const selectAdditionalQuestionnaire = async (req, res) => {
     }
     console.log(selectedQuestionnaire);
 
+    if (typeof selectedId !== "string") {
+      return res.status(400).json({ error: "Invalid questionnaire ID." });
+    }
     const hasResponses = await Response.exists({
       project_id,
-      questionnaire_id: selectedId,
+      questionnaire_id: { $eq: selectedId },
     });
 
     if (!hasResponses) {
