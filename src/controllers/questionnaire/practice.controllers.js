@@ -1,6 +1,7 @@
 const Practice = require("../../model/questionnaire/practice.model");
 const Category = require("../../model/questionnaire/categorie.model");
 const validator = require('validator');
+const mongoose = require('mongoose');
 
 // Obtener todas las prácticas
 const getAllPractices = async (req, res) => {
@@ -44,7 +45,7 @@ const updatePracticeById = async (req, res) => {
   try {
     const { name, original, questions } = req.body;
 
-    if (typeof name !== 'string' || typeof original !== 'boolean' || !Array.isArray(questions)) {
+    if (typeof name !== 'string' || typeof original !== 'boolean' || !Array.isArray(questions) || !questions.every(q => mongoose.Types.ObjectId.isValid(q))) {
       return res.status(400).json({ error: "Datos de entrada no válidos." });
     }
 
