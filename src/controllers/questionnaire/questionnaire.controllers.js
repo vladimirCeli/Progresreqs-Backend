@@ -341,7 +341,10 @@ const createQuestionnaire = async (req, res) => {
 
 const updateQuestionnaireById = async (req, res) => {
   try {
-    const { name, original, published, categories } = req.body;
+    let { name, original, published, categories } = req.body;
+    if (typeof name !== 'string' || typeof original !== 'string' || typeof published !== 'boolean' || !Array.isArray(categories)) {
+      return res.status(400).json({ error: "Datos inválidos proporcionados." });
+    }
 
     let name1 = name.trimLeft();
     if (!name1) {
@@ -358,7 +361,12 @@ const updateQuestionnaireById = async (req, res) => {
 
     const updatedQuestionnaire = await Questionnaire.findByIdAndUpdate(
       req.params.id,
-      { name, original, published, categories },
+      { 
+        name: { $eq: name }, 
+        original: { $eq: original }, 
+        published: { $eq: published }, 
+        categories: { $eq: categories } 
+      },
       { new: true }
     ).populate("categories");
 
