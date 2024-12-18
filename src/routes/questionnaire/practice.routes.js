@@ -4,17 +4,24 @@ const {  getAllPractices,
     createPractice,
     updatePracticeById,
     deletePracticeById, } = require('../../controllers/questionnaire/practice.controllers')
+const rateLimit = require('express-rate-limit');
 
 const router = Router()
 
-router.get('/subsection', getAllPractices )
+// set up rate limiter: maximum of 100 requests per 15 minutes
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // max 100 requests per windowMs
+});
 
-router.get('/subsection/:id', getPracticeById )
+router.get('/subsection', limiter, getAllPractices )
 
-router.post('/subsection', createPractice )
+router.get('/subsection/:id', limiter, getPracticeById )
 
-router.delete('/subsection/:id', deletePracticeById )
+router.post('/subsection', limiter, createPractice )
 
-router.put('/subsection/:id', updatePracticeById )
+router.delete('/subsection/:id', limiter, deletePracticeById )
+
+router.put('/subsection/:id', limiter, updatePracticeById )
 
 module.exports = router
