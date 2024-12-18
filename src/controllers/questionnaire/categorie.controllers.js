@@ -43,6 +43,9 @@ const createCategory = async (req, res) => {
 const updateCategoryById = async (req, res) => {
   try {
     const { name, original, practices } = req.body;
+    if (typeof name !== 'string' || typeof original !== 'boolean' || !Array.isArray(practices)) {
+      return res.status(400).json({ error: 'Datos de entrada no válidos.' });
+    }
 
     const existingCategory = await Category.findById(req.params.id);
 
@@ -58,7 +61,7 @@ const updateCategoryById = async (req, res) => {
 
     const updatedCategory = await Category.findByIdAndUpdate(
       req.params.id,
-      { name, original, practices },
+      { $set: { name, original, practices } },
       { new: true }
     ).populate('practices');
     if (!updatedCategory) {
