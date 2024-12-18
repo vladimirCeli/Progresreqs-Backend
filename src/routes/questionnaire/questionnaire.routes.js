@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const RateLimit = require("express-rate-limit");
 const {
   getAllQuestionnaires,
   getQuestionnaireById,
@@ -14,6 +15,11 @@ const {
 } = require("../../controllers/questionnaire/questionnaire.controllers");
 
 const router = Router();
+
+const limiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
 
 router.get("/questionnaire", getAllQuestionnaires);
 
@@ -38,6 +44,6 @@ router.delete("/questionnaire/:id", deleteQuestionnaireById);
 
 router.put("/questionnaire/:id", updateQuestionnaireById);
 
-router.get("/questionnaire/:id", getQuestionnaireById);
+router.get("/questionnaire/:id", limiter, getQuestionnaireById);
 
 module.exports = router;
