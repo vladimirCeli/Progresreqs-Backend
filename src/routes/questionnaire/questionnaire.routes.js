@@ -13,7 +13,6 @@ const {
   updateQuestionnaireById,
   deleteQuestionnaireById,
 } = require("../../controllers/questionnaire/questionnaire.controllers");
-const RateLimit = require('express-rate-limit');
 
 const router = Router();
 
