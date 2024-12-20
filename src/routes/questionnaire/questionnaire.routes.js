@@ -22,11 +22,11 @@ const limiter = RateLimit({
   max: 100, // max 100 requests per windowMs
 });
 
-router.get("/questionnaire", getAllQuestionnaires);
+router.get("/questionnaire",limiter, getAllQuestionnaires);
 
-router.get("/questionnaire/complete/:id", getQuestionnaireComplete);
+router.get("/questionnaire/complete/:id",limiter, getQuestionnaireComplete);
 
-router.get("/questionnaire/published/:project_id", getQuestionnairePublished);
+router.get("/questionnaire/published/:project_id",limiter, getQuestionnairePublished);
 
 router.put(
   "/questionnaire/editpublished/:id",
@@ -34,17 +34,17 @@ router.put(
   updateQuestionnaireByIdInPublishedOrUnpublished
 );
 
-router.get("/questionnaire/additional/:project_id", getAdditionalQuestionnaires);
+router.get("/questionnaire/additional/:project_id",limiter, getAdditionalQuestionnaires);
 
-router.post("/questionnaire/add/:projectId", selectAdditionalQuestionnaire);
+router.post("/questionnaire/add/:projectId",limiter, selectAdditionalQuestionnaire);
 
-router.put("/questionnaire/editsteps/:id", updateQuestionnaireByIdSteps);
+router.put("/questionnaire/editsteps/:id",limiter, updateQuestionnaireByIdSteps);
 
-router.post("/questionnaire", createQuestionnaire);
+router.post("/questionnaire",limiter, createQuestionnaire);
 
 router.delete("/questionnaire/:id", limiter, deleteQuestionnaireById);
 
-router.put("/questionnaire/:id", updateQuestionnaireById);
+router.put("/questionnaire/:id",limiter, updateQuestionnaireById);
 
 router.get("/questionnaire/:id", limiter, getQuestionnaireById);
 

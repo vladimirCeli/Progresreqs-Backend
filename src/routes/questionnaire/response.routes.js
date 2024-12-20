@@ -8,17 +8,22 @@ const { createResponse,
 
 const router = Router()
 
-router.get('/response', getAllResponses )
+const limiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
 
-router.get('/response/project/:id/:id2', getResponseByProjectAndQuestionnaireId )
+router.get('/response',limiter, getAllResponses )
 
-router.get('/response/:id', getResponseById )
+router.get('/response/project/:id/:id2',limiter, getResponseByProjectAndQuestionnaireId )
 
-router.post('/response', createResponse )
+router.get('/response/:id',limiter, getResponseById )
 
-router.delete('/response/:id', deleteResponseById )
+router.post('/response',limiter, createResponse )
 
-router.put('/response/:id', updateResponseById )
+router.delete('/response/:id',limiter, deleteResponseById )
+
+router.put('/response/:id',limiter, updateResponseById )
 
 module.exports = router
 

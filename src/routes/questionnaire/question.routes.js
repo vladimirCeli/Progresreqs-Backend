@@ -8,17 +8,22 @@ const { getAllQuestions,
 
 const router = Router()
 
-router.get('/question', getAllQuestions )
+const limiter = RateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // max 100 requests per windowMs
+  });
 
-router.get('/question/complete', getAllQuestionsComplete )
+router.get('/question',limiter, getAllQuestions )
 
-router.get('/question/:id', getQuestion )
+router.get('/question/complete',limiter, getAllQuestionsComplete )
 
-router.post('/question', createQuestion )
+router.get('/question/:id',limiter, getQuestion )
 
-router.delete('/question/:id', deleteQuestion )
+router.post('/question',limiter, createQuestion )
 
-router.put('/question/:id', updateQuestion )
+router.delete('/question/:id',limiter, deleteQuestion )
+
+router.put('/question/:id',limiter, updateQuestion )
 
 module.exports = router
 
