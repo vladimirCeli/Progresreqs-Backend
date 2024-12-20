@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const RateLimit = require("express-rate-limit");
 const {
   getAllQuestionnaires,
   getQuestionnaireById,
@@ -41,7 +42,7 @@ router.put("/questionnaire/editsteps/:id", updateQuestionnaireByIdSteps);
 
 router.post("/questionnaire", createQuestionnaire);
 
-router.delete("/questionnaire/:id", deleteQuestionnaireById);
+router.delete("/questionnaire/:id", limiter, deleteQuestionnaireById);
 
 router.put("/questionnaire/:id", updateQuestionnaireById);
 
