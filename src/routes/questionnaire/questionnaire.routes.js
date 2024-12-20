@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const RateLimit = require("express-rate-limit");
 const {
   getAllQuestionnaires,
   getQuestionnaireById,
@@ -16,35 +15,48 @@ const {
 
 const router = Router();
 
-const limiter = RateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // max 100 requests per windowMs
-});
+// Objeto en memoria para rastrear solicitudes
+const requestLogs = {};
 
-router.get("/questionnaire",limiter, getAllQuestionnaires);
+// Límite de solicitudes
+const REQUEST_LIMIT = 100;
+const WINDOW_TIME = 15 * 60 * 1000; // 15 minutos
 
-router.get("/questionnaire/complete/:id",limiter, getQuestionnaireComplete);
+// Middleware para limitar solicitudes
+function rateLimiter(req, res, next) {
+  const ip = req.ip;
+  const currentTime = Date.now();
 
-router.get("/questionnaire/published/:project_id",limiter, getQuestionnairePublished);
+  // Si no hay registros para esta IP, inicializamos su contador
+  if (!requestLogs[ip]) {
+    requestLogs[ip] = [];
+  }
 
-router.put(
-  "/questionnaire/editpublished/:id",
-  limiter,
-  updateQuestionnaireByIdInPublishedOrUnpublished
-);
+  // Filtramos las solicitudes que ya están fuera del tiempo permitido
+  requestLogs[ip] = requestLogs[ip].filter(timestamp => currentTime - timestamp < WINDOW_TIME);
 
-router.get("/questionnaire/additional/:project_id",limiter, getAdditionalQuestionnaires);
+  // Si el número de solicitudes excede el límite, respondemos con un 429
+  if (requestLogs[ip].length >= REQUEST_LIMIT) {
+    return res.status(429).json({ message: "Too many requests. Please try again later." });
+  }
 
-router.post("/questionnaire/add/:projectId",limiter, selectAdditionalQuestionnaire);
+  // Agregamos el timestamp de la solicitud actual
+  requestLogs[ip].push(currentTime);
 
-router.put("/questionnaire/editsteps/:id",limiter, updateQuestionnaireByIdSteps);
+  // Continuamos con el siguiente middleware o ruta
+  next();
+}
 
-router.post("/questionnaire",limiter, createQuestionnaire);
-
-router.delete("/questionnaire/:id", limiter, deleteQuestionnaireById);
-
-router.put("/questionnaire/:id",limiter, updateQuestionnaireById);
-
-router.get("/questionnaire/:id", limiter, getQuestionnaireById);
+router.get("/questionnaire", rateLimiter, getAllQuestionnaires);
+router.get("/questionnaire/complete/:id", rateLimiter, getQuestionnaireComplete);
+router.get("/questionnaire/published/:project_id", rateLimiter, getQuestionnairePublished);
+router.put("/questionnaire/editpublished/:id", rateLimiter, updateQuestionnaireByIdInPublishedOrUnpublished);
+router.get("/questionnaire/additional/:project_id", rateLimiter, getAdditionalQuestionnaires);
+router.post("/questionnaire/add/:projectId", rateLimiter, selectAdditionalQuestionnaire);
+router.put("/questionnaire/editsteps/:id", rateLimiter, updateQuestionnaireByIdSteps);
+router.post("/questionnaire", rateLimiter, createQuestionnaire);
+router.delete("/questionnaire/:id", rateLimiter, deleteQuestionnaireById);
+router.put("/questionnaire/:id", rateLimiter, updateQuestionnaireById);
+router.get("/questionnaire/:id", rateLimiter, getQuestionnaireById);
 
 module.exports = router;
