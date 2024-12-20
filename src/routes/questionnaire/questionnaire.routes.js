@@ -46,6 +46,6 @@ router.delete("/questionnaire/:id", limiter, deleteQuestionnaireById);
 
 router.put("/questionnaire/:id", updateQuestionnaireById);
 
-router.get("/questionnaire/:id", getQuestionnaireById);
+router.get("/questionnaire/:id", limiter, getQuestionnaireById);
 
 module.exports = router;
