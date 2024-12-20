@@ -1,4 +1,5 @@
 const {Router} = require('express')
+const RateLimit = require('express-rate-limit');
 const {   getAllCategories,
     getCategoryById,
     createCategory,
@@ -7,14 +8,19 @@ const {   getAllCategories,
 
 const router = Router()
 
-router.get('/categorie', getAllCategories )
+const limiter = RateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // max 100 requests per windowMs
+});
 
-router.get('/categorie/:id', getCategoryById )
+router.get('/categorie', limiter, getAllCategories )
 
-router.post('/categorie', createCategory )
+router.get('/categorie/:id', limiter, getCategoryById )
 
-router.delete('/categorie/:id', deleteCategoryById )
+router.post('/categorie', limiter, createCategory )
 
-router.put('/categorie/:id', updateCategoryById )
+router.delete('/categorie/:id', limiter, deleteCategoryById )
+
+router.put('/categorie/:id', limiter, updateCategoryById )
 
 module.exports = router
