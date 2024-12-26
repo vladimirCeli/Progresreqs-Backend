@@ -1,5 +1,4 @@
 const {Router} = require('express')
-const RateLimit = require("express-rate-limit");
 
 const { getAllQuestions,
     getAllQuestionsComplete,
@@ -10,22 +9,50 @@ const { getAllQuestions,
 
 const router = Router()
 
-const limiter = RateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // max 100 requests per windowMs
-  });
+// Objeto en memoria para rastrear solicitudes
+const requestLogs = {};
 
-router.get('/question',limiter, getAllQuestions )
+// Límite de solicitudes
+const REQUEST_LIMIT = 100;
+const WINDOW_TIME = 15 * 60 * 1000; // 15 minutos
 
-router.get('/question/complete',limiter, getAllQuestionsComplete )
+// Middleware para limitar solicitudes
+function rateLimiter(req, res, next) {
+  const ip = req.ip;
+  const currentTime = Date.now();
 
-router.get('/question/:id',limiter, getQuestion )
+  // Si no hay registros para esta IP, inicializamos su contador
+  if (!requestLogs[ip]) {
+    requestLogs[ip] = [];
+  }
 
-router.post('/question',limiter, createQuestion )
+  // Filtramos las solicitudes que ya están fuera del tiempo permitido
+  requestLogs[ip] = requestLogs[ip].filter(timestamp => currentTime - timestamp < WINDOW_TIME);
 
-router.delete('/question/:id',limiter, deleteQuestion )
+  // Si el número de solicitudes excede el límite, respondemos con un 429
+  if (requestLogs[ip].length >= REQUEST_LIMIT) {
+    return res.status(429).json({ message: "Too many requests. Please try again later." });
+  }
 
-router.put('/question/:id',limiter, updateQuestion )
+  // Agregamos el timestamp de la solicitud actual
+  requestLogs[ip].push(currentTime);
+
+  // Continuamos con el siguiente middleware o ruta
+  next();
+}
+
+
+router.get('/question',rateLimiter, getAllQuestions )
+
+router.get('/question/complete',rateLimiter, getAllQuestionsComplete )
+
+router.get('/question/:id',rateLimiter, getQuestion )
+
+router.post('/question',rateLimiter, createQuestion )
+
+router.delete('/question/:id',rateLimiter, deleteQuestion )
+
+router.put('/question/:id',rateLimiter, updateQuestion )
 
 module.exports = router
 

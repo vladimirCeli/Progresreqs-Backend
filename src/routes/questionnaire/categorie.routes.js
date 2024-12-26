@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const RateLimit = require('express-rate-limit');
+
 const {   getAllCategories,
     getCategoryById,
     createCategory,
@@ -8,19 +8,46 @@ const {   getAllCategories,
 
 const router = Router()
 
-const limiter = RateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // max 100 requests per windowMs
-});
+// Objeto en memoria para rastrear solicitudes
+const requestLogs = {};
 
-router.get('/categorie', limiter, getAllCategories )
+// Límite de solicitudes
+const REQUEST_LIMIT = 100;
+const WINDOW_TIME = 15 * 60 * 1000; // 15 minutos
 
-router.get('/categorie/:id', limiter, getCategoryById )
+// Middleware para limitar solicitudes
+function rateLimiter(req, res, next) {
+  const ip = req.ip;
+  const currentTime = Date.now();
 
-router.post('/categorie', limiter, createCategory )
+  // Si no hay registros para esta IP, inicializamos su contador
+  if (!requestLogs[ip]) {
+    requestLogs[ip] = [];
+  }
 
-router.delete('/categorie/:id', limiter, deleteCategoryById )
+  // Filtramos las solicitudes que ya están fuera del tiempo permitido
+  requestLogs[ip] = requestLogs[ip].filter(timestamp => currentTime - timestamp < WINDOW_TIME);
 
-router.put('/categorie/:id', limiter, updateCategoryById )
+  // Si el número de solicitudes excede el límite, respondemos con un 429
+  if (requestLogs[ip].length >= REQUEST_LIMIT) {
+    return res.status(429).json({ message: "Too many requests. Please try again later." });
+  }
+
+  // Agregamos el timestamp de la solicitud actual
+  requestLogs[ip].push(currentTime);
+
+  // Continuamos con el siguiente middleware o ruta
+  next();
+}
+
+router.get('/categorie', rateLimiter, getAllCategories )
+
+router.get('/categorie/:id', rateLimiter, getCategoryById )
+
+router.post('/categorie', rateLimiter, createCategory )
+
+router.delete('/categorie/:id', rateLimiter, deleteCategoryById )
+
+router.put('/categorie/:id', rateLimiter, updateCategoryById )
 
 module.exports = router
