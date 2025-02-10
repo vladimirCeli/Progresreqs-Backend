@@ -14,7 +14,6 @@
 - **PostgreSQL** (Base de datos relacional)
 - **Sequelize** (ORM para PostgreSQL)
 - **Mongoose** (ODM para MongoDB)
-- **Redis** (Para almacenamiento en caché)
 - **JWT** (Autenticación basada en tokens)
 - **bcrypt** (Hashing de contraseñas)
 - **Nodemailer** (Envío de correos electrónicos)
