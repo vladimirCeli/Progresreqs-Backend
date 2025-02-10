@@ -343,39 +343,42 @@ const createQuestionnaire = async (req, res) => {
     const savedQuestionnaire = await newQuestionnaire.save();
     res.status(201).json({ savedQuestionnaire, success: "Cuestionario creado correctamente" });
   } catch (error) {
-    console.error(error);
+    console.error("Este es el error"+error);
     res.status(500).json({ error: "Hubo un error al crear el cuestionario." });
   }
 };
 
 const updateQuestionnaireById = async (req, res) => {
   try {
-    let { name, original, published, categories } = req.body;
-    if (typeof name !== 'string' || typeof original !== 'string' || typeof published !== 'boolean' || !Array.isArray(categories)) {
-      return res.status(400).json({ error: "Datos inválidos proporcionados." });
+    const { name, original, published, categories } = req.body;
+    
+    // Validación mejorada
+    if (!name || typeof name !== 'string') {
+      return res.status(400).json({ error: "El nombre del cuestionario es inválido." });
     }
 
     let name1 = name.trimLeft();
     if (!name1) {
-      return res
-        .status(400)
-        .json({ error: "El nombre del cuestionario no puede estar vacío." });
+      return res.status(400).json({ error: "El nombre del cuestionario no puede estar vacío." });
     }
 
-    if (!categories || categories.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "Debe seleccionar al menos una categoría." });
+    if (!Array.isArray(categories) || categories.length === 0) {
+      return res.status(400).json({ error: "Debe seleccionar al menos una categoría." });
     }
+
+    // Construir el objeto de actualización correctamente
+    const updateData = {
+      name,
+      categories,
+    };
+
+    // Añadir campos opcionales solo si están definidos
+    if (original !== undefined) updateData.original = original;
+    if (published !== undefined) updateData.published = published;
 
     const updatedQuestionnaire = await Questionnaire.findByIdAndUpdate(
       req.params.id,
-      { 
-        name: { $eq: name }, 
-        original: { $eq: original }, 
-        published: { $eq: published }, 
-        categories: { $eq: categories } 
-      },
+      updateData,
       { new: true }
     ).populate("categories");
 
@@ -383,12 +386,13 @@ const updateQuestionnaireById = async (req, res) => {
       return res.status(404).json({ error: "Cuestionario no encontrado." });
     }
 
-    res.status(200).json({ updatedQuestionnaire, success: "Cuestionario actualizado correctamente" });
+    res.status(200).json({ 
+      updatedQuestionnaire, 
+      success: "Cuestionario actualizado correctamente" 
+    });
   } catch (error) {
     console.error("Error al actualizar el cuestionario por ID:", error);
-    res
-      .status(500)
-      .json({ error: "Hubo un error al actualizar el cuestionario." });
+    res.status(500).json({ error: "Hubo un error al actualizar el cuestionario." });
   }
 };
 
