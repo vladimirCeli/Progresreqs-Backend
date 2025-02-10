@@ -30,7 +30,7 @@
 
 1. Clona el repositorio:
    ```bash
-   git clone [https://github.com/tu-usuario/ssunl.git](https://github.com/vladimirCeli/Progresreqs-Backend.git)
+   git clone (https://github.com/vladimirCeli/Progresreqs-Backend.git)
    cd Progresreqs-Backend
    ```
 
