@@ -83,7 +83,7 @@ Esto iniciará el servidor en modo normal sin monitoreo de cambios.
 
 ## 📂 Estructura del Proyecto
 ```
-ssunl/
+Progresreqs-Backend/
 │── src/
 │   ├── config/      # Configuración (Base de datos, variables de entorno)
 │   ├── controllers/ # Lógica de negocio
@@ -101,13 +101,18 @@ ssunl/
 
 ## 📌 Endpoints Principales
 
-| Método | Ruta               | Descripción |
-|---------|--------------------|-------------|
-| `POST`  | `/auth/login`      | Iniciar sesión y obtener un token |
-| `POST`  | `/auth/register`   | Registrar un nuevo usuario |
-| `GET`   | `/users`           | Obtener lista de usuarios |
-| `POST`  | `/questionnaire`   | Crear un cuestionario |
-| `GET`   | `/categories`      | Obtener categorías |
+Para ver la lista completa de rutas de la API, revisa el archivo `routes.js` en la carpeta `src/routes`.
+
+Algunas rutas clave:
+- `POST /register`: Registro de usuario
+- `POST /login`: Inicio de sesión
+- `GET /projects/all`: Obtener todos los proyectos
+- `POST /projects`: Crear un proyecto
+- `GET /questionnaire`: Obtener cuestionarios
+- `POST /questionnaire`: Crear un cuestionario
+- `GET /categorie`: Obtener categorías
+
+Para la lista completa de endpoints, revisa el código en la carpeta `routes/`.
 
 ---
 
