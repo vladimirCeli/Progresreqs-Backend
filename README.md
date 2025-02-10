@@ -1,4 +1,4 @@
-# SSUNL
+# Progresreqs-Backend
 
 **Versión:** 1.0.0  
 **Autor:** Vladimir Celi  
@@ -146,5 +146,5 @@ Este proyecto está bajo la licencia **ISC**.
 
 ## 📞 Contacto
 
-Si tienes dudas o sugerencias, contacta a **Vladimir Celi** en [tu correo o redes sociales].
+Si tienes dudas o sugerencias, contacta a **Vladimir Celi** en [vladiceli^@gmail.com].
 
