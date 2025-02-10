@@ -151,5 +151,5 @@ Este proyecto está bajo la licencia **ISC**.
 
 ## 📞 Contacto
 
-Si tienes dudas o sugerencias, contacta a **Vladimir Celi** en [vladiceli^@gmail.com].
+Si tienes dudas o sugerencias, contacta a **Vladimir Celi** en [vladiceli6@gmail.com].
 
