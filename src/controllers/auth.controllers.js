@@ -60,18 +60,23 @@ const login = async (req, res, next) => {
         UserInfo: { username: username, rol_id: user.rol_id },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '5m' }
+      { expiresIn: '30m' }
     );
 
     const refresh_token = jwt.sign(
       { username: username, password: password },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '7d' }
     );
 
     await user.update({ refresh_token: refresh_token });
 
-    res.cookie('token', refresh_token, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 });
+    res.cookie('token', refresh_token, { 
+      httpOnly: true, 
+      secure: true, 
+      sameSite: "none", 
+      maxAge: 7 * 24 * 60 * 60 * 1000 
+    });
     res.json({ rol_id: user.rol_id, token: accessToken });
   } catch (error) {
     // Maneja errores generales aquí
