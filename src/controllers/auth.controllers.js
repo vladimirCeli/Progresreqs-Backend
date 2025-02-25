@@ -39,7 +39,11 @@ const login = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    const user = await Person.findOne({ where: { username: username } });
+    const user = await Person.findOne({ 
+      where: { username },
+      attributes: ['id', 'username', 'password', 'confirmed', 'rol_id'],
+      raw: true
+    });
 
     if (!user) {
       return res.status(404).json({ message: 'No existe el usuario en el sistema' });
@@ -49,27 +53,28 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Usuario no confirmado' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const [isPasswordValid, accessToken, refresh_token] = await Promise.all([
+      bcrypt.compare(password, user.password),
+      jwt.sign(
+        { UserInfo: { username, rol_id: user.rol_id } },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '30m' }
+      ),
+      jwt.sign(
+        { username },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+      )
+    ]);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    const accessToken = jwt.sign(
-      {
-        UserInfo: { username: username, rol_id: user.rol_id },
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '30m' }
-    );
-
-    const refresh_token = jwt.sign(
-      { username: username, password: password },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    await user.update({ refresh_token: refresh_token });
+    Person.update(
+      { refresh_token },
+      { where: { id: user.id } }
+    ).catch(console.error);
 
     res.cookie('token', refresh_token, { 
       httpOnly: true, 
@@ -77,10 +82,15 @@ const login = async (req, res, next) => {
       sameSite: "none", 
       maxAge: 7 * 24 * 60 * 60 * 1000 
     });
-    res.json({ rol_id: user.rol_id, token: accessToken });
+    
+    return res.json({ 
+      rol_id: user.rol_id, 
+      token: accessToken 
+    });
+
   } catch (error) {
-    // Maneja errores generales aquí
-    next(error);
+    console.error('Error en login:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
 
